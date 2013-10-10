@@ -27,9 +27,11 @@ class machine(object):
         self.steps_max=steps_max
 
     def report(self):
+        """Prints memory, errors and steps."""
         print ("".join(self.memory), self.error, self.steps)
 
     def step(self):
+        """Take a single step."""
         for row in self.program:
             if row.state == self.state and row.symbol == self.memory[self.pointer]:
                 self.steps += 1
@@ -54,6 +56,8 @@ class machine(object):
         return 0
 
     def debug(self):
+        """Prints the state, memory and lines of the program. Current
+        row is marked with a '>'."""
         print("_,.-^ DEBUG ^-.,_")
         print("state = %s %s"%(self.state, self.error))
         print("".join(self.memory))
@@ -68,13 +72,8 @@ class machine(object):
             print(row)
 
     def k_steps(self, k):
+        """Takes k steps."""
         for i in range(k):
-            if 0 == self.step() or state=="halt":
-                report()
-                return
-
-    def all_steps(self):
-        while True:
             if 0 == self.step() or state=="halt":
                 report()
                 return
@@ -106,6 +105,8 @@ def successor():
             m.step()
             input()
         m.debug()
+        input()
+        print("**********************************")
 
 def little_endian_add():
     """Code that adds one to a little endian binary number."""
@@ -119,6 +120,7 @@ def little_endian_add():
 
 
 def main():
+    """Main performs the operations of a trivial machine."""
     code=[]
     code.append(row("start", ">", ">", ">", "carry"))
     #state symbol write direction new_state
