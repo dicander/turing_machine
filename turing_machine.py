@@ -11,7 +11,7 @@ class row(object):
         self.new_state = new_state
 
     def __str__(self):
-        return("{:10} {:7} {:7} {:7} {:10}".format(self.state, self.symbol, self.write, self.direction, self.new_state))
+        return(" {:10}{:7}{:7}{:7}{:10}".format(self.state, self.symbol, self.write, self.direction, self.new_state))
 
 
 class machine(object):
@@ -63,7 +63,7 @@ class machine(object):
         print("".join(self.memory))
         print ((self.pointer*" ")+"^")
         print("PROGRAM")
-        print(" %10s %7s %7s %7s %10s"%("State", "symbol", "write", "move", "new_state"))
+        print("  {:10}{:7}{:7}{:7}{:10}".format("State", "symbol", "write", "move", "new_state"))
         for row in self.program:
             if row.state == self.state and row.symbol == self.memory[self.pointer]:
                 print(">", end="")
