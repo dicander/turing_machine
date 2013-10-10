@@ -11,7 +11,7 @@ class row(object):
         self.new_state = new_state
 
     def __str__(self):
-        return("%10s %7s %7s %7s %10s"%(self.state, self.symbol, self.write, self.direction, self.new_state))
+        return("{:10} {:7} {:7} {:7} {:10}".format(self.state, self.symbol, self.write, self.direction, self.new_state))
 
 
 class machine(object):
