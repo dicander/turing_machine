@@ -79,62 +79,6 @@ class machine(object):
                 report()
                 return
 
-def successor():
-    """Example machine that adds one to binary numbers."""
-    code=[]
-    code.append(row("start", ">", ">", ">", "start"))
-    code.append(row("start", "0", "0", ">", "right"))
-    code.append(row("start", "1", "1", ">", "all_one"))
-    code.append(row("start", "#", "1", "<", "halt"))
-    code.append(row("all_one", "0", "0", ">", "right"))
-    code.append(row("all_one", "1", "1", ">", "all_one"))
-    code.append(row("all_one", "#", "0", "<", "clear"))
-    code.append(row("right", "0", "0", ">", "right"))
-    code.append(row("right", "1", "1", ">", "right"))
-    code.append(row("right", "#", "#", "<", "carry"))
-    code.append(row("clear", ">", ">", ">", "put_one"))
-    code.append(row("clear", "1", "0", "<", "clear"))
-    code.append(row("put_one", "0", "1", "<", "halt"))
-    code.append(row("carry", "0", "1", "<", "halt"))
-    code.append(row("carry", "1", "0", "<", "carry"))
-    datatapes=[['>', '1', '1', '1', '1','#','#'], ['>','#','#','#'], ['>','1','0','1','0','1','0','#']]
-    datatapes+=[(['>']+[random.choice(['0','1']) for symbols in range(random.randint(1,10))]+['#','#','#']) for x in range(10)]
-    for mem in datatapes:
-        m = machine(code, mem)
-        while m.state != "halt":
-            m.debug()
-            m.step()
-            input()
-        m.debug()
-        input()
-        print("**********************************")
-
-def little_endian_add():
-    """Code that adds one to a little endian binary number."""
-    code=[]
-    code.append(row("start", ">", ">", ">", "carry"))
-    #state symbol write direction new_state
-    code.append(row("carry", "0", "1", "<", "halt"))
-    code.append(row("carry", "1", "0", ">", "carry"))
-    code.append(row("carry", "#", "1", "<", "halt"))
-    m=machine(code, ['>', '1', '1', '1', '1','#','#'])
-
-
-def trivial():
-    """trivial performs the operations of a trivial machine."""
-    code=[]
-    code.append(row("start", ">", ">", ">", "carry"))
-    #state symbol write direction new_state
-    code.append(row("carry", "0", "1", "<", "halt"))
-    code.append(row("carry", "1", "0", ">", "carry"))
-    code.append(row("carry", "#", "1", "<", "halt"))
-    m=machine(code, ['>', '1', '1', '1', '1','#','#'])
-    while m.state != "halt":
-        m.debug()
-        m.step()
-        input()
-    m.debug()
-
 def main():
     if len(sys.argv) < 2:
         print ("turing_machine: No files.")
