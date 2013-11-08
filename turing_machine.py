@@ -1,9 +1,9 @@
 import random
-
+import sys
 
 class row(object):
     """A row in a Turing machine program"""
-    def __init__(self, state="start", symbol = ">", write = ">" , direction="R", new_state = "start"):
+    def __init__(self, state="start", symbol = ">", write = ">" , direction=">", new_state = "start"):
         self.state=state
         self.symbol=symbol
         self.write = write
@@ -11,12 +11,13 @@ class row(object):
         self.new_state = new_state
 
     def __str__(self):
-        return(" {:10}{:7}{:7}{:7}{:10}".format(self.state, self.symbol, self.write, self.direction, self.new_state))
+        return(" {:16}{:7}{:7}{:7}{:16}".format(self.state, self.symbol, self.write, self.direction, self.new_state))
 
 
 class machine(object):
     """A virtual Turing machine."""
-    def __init__(self, program=[], memory=['>'], state="start", pointer=0, mem_max=1000, steps_max=10000):
+    def __init__(self, program=[], memory=['>'], state="start", pointer=0, 
+        mem_max=100000, steps_max=100000):
         self.program = program
         self.state = state
         self.memory = memory
@@ -37,7 +38,7 @@ class machine(object):
                 self.steps += 1
                 self.memory[self.pointer] = row.write
                 self.state=row.new_state
-                if row.direction == ">":
+                if row.direction in ">rR":
                     self.pointer +=1
                     if self.pointer >= self.mem_max:
                         self.error = "Memory limit exceeded."
@@ -45,7 +46,7 @@ class machine(object):
                     elif self.pointer >=len(self.memory):
                         self.memory += ["#" for x in range(len(self.memory))]
                     return 1
-                elif row.direction == "<":
+                elif row.direction in "<lL":
                     self.pointer -=1
                     if self.pointer <0:
                         self.error = "Pointer negative."
@@ -63,7 +64,7 @@ class machine(object):
         print("".join(self.memory))
         print ((self.pointer*" ")+"^")
         print("PROGRAM")
-        print("  {:10}{:7}{:7}{:7}{:10}".format("State", "symbol", "write", "move", "new_state"))
+        print("  {:16}{:7}{:7}{:7}{:16}".format("State", "symbol", "write", "move", "new_state"))
         for row in self.program:
             if row.state == self.state and row.symbol == self.memory[self.pointer]:
                 print(">", end="")
@@ -119,8 +120,8 @@ def little_endian_add():
     m=machine(code, ['>', '1', '1', '1', '1','#','#'])
 
 
-def main():
-    """Main performs the operations of a trivial machine."""
+def trivial():
+    """trivial performs the operations of a trivial machine."""
     code=[]
     code.append(row("start", ">", ">", ">", "carry"))
     #state symbol write direction new_state
@@ -134,4 +135,34 @@ def main():
         input()
     m.debug()
 
-successor()
+def main():
+    if len(sys.argv) < 2:
+        print ("turing_machine: No files.")
+        return
+    file = open(sys.argv[1])
+    code = []
+    tapes = []
+    counter = 0
+    for line in file:
+        counter += 1
+        tokens = line.split()
+        if len(tokens)>1 and tokens[0] == "TAPE":
+            tapes.append(tokens[1])
+        if len(tokens)<5:
+            continue
+        if "#" in tokens[0]:
+            continue
+        if tokens[1] not in "01>#" or tokens[2] not in "01>#" or tokens[3] not in "lrLR<>":
+                print("Error in line", counter)
+                continue
+        code.append(row(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]))
+    for tape in tapes:
+        m=machine(code, [symbol for symbol in tape])
+        while m.state != "halt":
+            m.debug()
+            m.step()
+            input()
+        m.debug()
+        input()
+
+main()
