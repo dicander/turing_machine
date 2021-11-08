@@ -1,7 +1,8 @@
 import random
 import sys
 
-class row(object):
+
+class Row(object):
     """A row in a Turing machine program"""
     def __init__(self, state="start", symbol=">", write=">", direction=">", new_state="start"):
         self.state = state
@@ -11,13 +12,14 @@ class row(object):
         self.new_state = new_state
 
     def __str__(self):
-        return(" {:16}{:7}{:7}{:7}{:16}".format(self.state, self.symbol, self.write, self.direction, self.new_state))
+        return(" {:16}{:7}{:7}{:7}{:16}".format(self.state, self.symbol,
+                                                self.write, self.direction, self.new_state))
 
 
 class Machine(object):
     """A virtual Turing machine."""
     def __init__(self, program=[], memory=['>'], state="start", pointer=0, 
-        mem_max=100000, steps_max=100000):
+                 mem_max=100000, steps_max=100000):
         self.program = program
         self.state = state
         self.memory = memory
@@ -43,7 +45,7 @@ class Machine(object):
                     if self.pointer >= self.mem_max:
                         self.error = "Memory limit exceeded."
                         return 0
-                    elif self.pointer >=len(self.memory):
+                    elif self.pointer >= len(self.memory):
                         self.memory += ["#" for x in range(len(self.memory))]
                     return 1
                 elif row.direction in "<lL":
@@ -75,13 +77,14 @@ class Machine(object):
     def k_steps(self, k):
         """Takes k steps."""
         for i in range(k):
-            if 0 == self.step() or state=="halt":
-                report()
+            if 0 == self.step() or self.state == "halt":
+                self.report()
                 return
+
 
 def main():
     if len(sys.argv) < 2:
-        print ("turing_machine: No files.")
+        print("turing_machine: No files.")
         return
     file = open(sys.argv[1])
     code = []
@@ -97,9 +100,9 @@ def main():
         if "#" in tokens[0]:
             continue
         if tokens[1] not in "01>#" or tokens[2] not in "01>#" or tokens[3] not in "lrLR<>":
-                print("Error in line", counter)
-                continue
-        code.append(row(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]))
+            print("Error in line", counter)
+            continue
+        code.append(Row(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]))
     for tape in tapes:
         m = Machine(code, [symbol for symbol in tape])
         while m.state != "halt":
