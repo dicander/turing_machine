@@ -3,9 +3,9 @@ import sys
 
 class row(object):
     """A row in a Turing machine program"""
-    def __init__(self, state="start", symbol = ">", write = ">" , direction=">", new_state = "start"):
-        self.state=state
-        self.symbol=symbol
+    def __init__(self, state="start", symbol=">", write=">", direction=">", new_state="start"):
+        self.state = state
+        self.symbol = symbol
         self.write = write
         self.direction = direction
         self.new_state = new_state
@@ -14,7 +14,7 @@ class row(object):
         return(" {:16}{:7}{:7}{:7}{:16}".format(self.state, self.symbol, self.write, self.direction, self.new_state))
 
 
-class machine(object):
+class Machine(object):
     """A virtual Turing machine."""
     def __init__(self, program=[], memory=['>'], state="start", pointer=0, 
         mem_max=100000, steps_max=100000):
@@ -24,12 +24,12 @@ class machine(object):
         self.pointer = 0
         self.steps = 0
         self.error = ""
-        self.mem_max=mem_max
-        self.steps_max=steps_max
+        self.mem_max = mem_max
+        self.steps_max = steps_max
 
     def report(self):
         """Prints memory, errors and steps."""
-        print ("".join(self.memory), self.error, self.steps)
+        print("".join(self.memory), self.error, self.steps)
 
     def step(self):
         """Take a single step."""
@@ -39,7 +39,7 @@ class machine(object):
                 self.memory[self.pointer] = row.write
                 self.state=row.new_state
                 if row.direction in ">rR":
-                    self.pointer +=1
+                    self.pointer += 1
                     if self.pointer >= self.mem_max:
                         self.error = "Memory limit exceeded."
                         return 0
@@ -47,8 +47,8 @@ class machine(object):
                         self.memory += ["#" for x in range(len(self.memory))]
                     return 1
                 elif row.direction in "<lL":
-                    self.pointer -=1
-                    if self.pointer <0:
+                    self.pointer -= 1
+                    if self.pointer < 0:
                         self.error = "Pointer negative."
                         return 0
                     return 1
@@ -101,12 +101,13 @@ def main():
                 continue
         code.append(row(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]))
     for tape in tapes:
-        m=machine(code, [symbol for symbol in tape])
+        m = Machine(code, [symbol for symbol in tape])
         while m.state != "halt":
             m.debug()
             m.step()
             input()
         m.debug()
         input()
+
 
 main()
